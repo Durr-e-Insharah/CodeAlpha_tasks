@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shrink - URL Shortener</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Shrink a long link</h1>
+      <p class="lede">Paste any web address and get a short one that redirects to it.</p>
+    </header>
+
+    {% if not_found %}
+    <p class="notice" role="alert">The short link <strong>/{{ not_found }}</strong> does not exist. Create it below.</p>
+    {% endif %}
+
+    <form id="shorten-form" autocomplete="off">
+      <label for="url">Long link</label>
+      <input id="url" name="url" type="text" placeholder="https://example.com/a/very/long/page" required>
+
+      <label for="custom">Custom ending <span class="hint">(optional)</span></label>
+      <input id="custom" name="custom" type="text" placeholder="my-link" maxlength="20">
+
+      <button type="submit">Shorten link</button>
+      <p id="error" class="error" role="alert" hidden></p>
+    </form>
+
+    <section id="result" class="result" hidden aria-live="polite">
+      <p class="result-label">Your short link</p>
+      <div class="result-row">
+        <a id="short-link" href="#" target="_blank" rel="noopener"></a>
+        <button id="copy-btn" type="button">Copy</button>
+      </div>
+    </section>
+
+    <section class="recent">
+      <h2>Recent links</h2>
+      <p id="empty" class="muted">No links yet. Shorten your first one above.</p>
+      <ul id="links"></ul>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
