@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <h1 class="text-2xl font-bold">{{ user.employer.company_name }}</h1>
+  <a class="btn" href="{% url 'job_create' %}">Post a job</a>
+</div>
+
+<dl class="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+  <div class="card"><dt class="text-sm text-slate-600">Jobs posted</dt><dd class="text-2xl font-bold">{{ total_jobs }}</dd></div>
+  <div class="card"><dt class="text-sm text-slate-600">Open jobs</dt><dd class="text-2xl font-bold">{{ open_jobs }}</dd></div>
+  <div class="card"><dt class="text-sm text-slate-600">Applications</dt><dd class="text-2xl font-bold">{{ total_applications }}</dd></div>
+  <div class="card"><dt class="text-sm text-slate-600">Not reviewed yet</dt><dd class="text-2xl font-bold">{{ new_applications }}</dd></div>
+</dl>
+
+<h2 class="mt-10 mb-3 font-semibold">Your jobs</h2>
+<div class="space-y-3">
+  {% for job in jobs %}
+    <div class="card flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <a href="{% url 'job_detail' job.pk %}" class="font-semibold hover:underline">{{ job.title }}</a>
+        <p class="text-sm text-slate-600">{{ job.location }} · {% if job.is_open %}Open{% else %}Closed{% endif %} · {{ job.app_count }} application{{ job.app_count|pluralize }}</p>
+      </div>
+      <div class="flex gap-2">
+        <a class="btn-quiet" href="{% url 'job_applicants' job.pk %}">Applicants</a>
+        <a class="btn-quiet" href="{% url 'job_edit' job.pk %}">Edit</a>
+        <form method="post" action="{% url 'job_delete' job.pk %}" onsubmit="return confirm('Delete this job and its applications?')">
+          {% csrf_token %}<button class="btn-quiet" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-slate-600">No jobs yet. Post your first job to start receiving applications.</p>
+  {% endfor %}
+</div>
+{% endblock %}

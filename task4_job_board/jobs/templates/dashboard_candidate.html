@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load job_extras %}
+{% block title %}My applications{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">My applications</h1>
+<p class="mt-1 text-slate-600">Track where each application stands.</p>
+<div class="mt-6 space-y-3">
+  {% for app in applications %}
+    <div class="card flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <a href="{% url 'job_detail' app.job.pk %}" class="font-semibold hover:underline">{{ app.job.title }}</a>
+        <p class="text-sm text-slate-600">{{ app.job.employer.company_name }} · applied {{ app.applied_at|date:"d M Y" }}{% if app.resume %} · {{ app.resume.title }}{% endif %}</p>
+      </div>
+      <span class="rounded-full px-3 py-1 text-xs font-semibold {{ app.status|status_badge }}">{{ app.get_status_display }}</span>
+    </div>
+  {% empty %}
+    <p class="text-slate-600">You haven't applied for any jobs yet. <a class="text-indigo-600 hover:underline" href="{% url 'job_list' %}">Browse jobs</a></p>
+  {% endfor %}
+</div>
+{% endblock %}

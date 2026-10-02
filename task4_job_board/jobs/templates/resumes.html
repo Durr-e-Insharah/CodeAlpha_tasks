@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}My resumes{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">My resumes</h1>
+<div class="mt-6 grid gap-6 md:grid-cols-2">
+  <form method="post" enctype="multipart/form-data" class="card">
+    {% csrf_token %}
+    <h2 class="mb-4 font-semibold">Upload a resume</h2>
+    {% include "_fields.html" %}
+    <button type="submit" class="btn w-full">Upload resume</button>
+  </form>
+
+  <div class="space-y-3">
+    {% for resume in resumes %}
+      <div class="card flex items-center justify-between gap-3">
+        <div>
+          <p class="font-medium">{{ resume.title }}</p>
+          <p class="text-xs text-slate-500">Uploaded {{ resume.uploaded_at|date:"d M Y" }}</p>
+        </div>
+        <div class="flex gap-2">
+          <a class="btn-quiet" href="{% url 'resume_download' resume.pk %}">Download</a>
+          <form method="post" action="{% url 'resume_delete' resume.pk %}" onsubmit="return confirm('Delete this resume?')">
+            {% csrf_token %}<button class="btn-quiet" type="submit">Delete</button>
+          </form>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-slate-600">No resumes yet. Upload one to start applying.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

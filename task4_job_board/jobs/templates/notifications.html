@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<h1 class="text-2xl font-bold">Notifications</h1>
+<div class="mt-6 space-y-2">
+  {% for n in items %}
+    <div class="card flex items-center justify-between gap-3 {% if not n.is_read %}ring-2 ring-amber-300{% endif %}">
+      <div>
+        <p>{{ n.message }}</p>
+        <p class="text-xs text-slate-500">{{ n.created_at|timesince }} ago</p>
+      </div>
+      {% if n.link %}<a class="btn-quiet" href="{{ n.link }}">Open</a>{% endif %}
+    </div>
+  {% empty %}
+    <p class="text-slate-600">You're all caught up.</p>
+  {% endfor %}
+</div>
+{% endblock %}
