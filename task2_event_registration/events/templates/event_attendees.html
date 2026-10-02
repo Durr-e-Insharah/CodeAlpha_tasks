@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Attendees{% endblock %}
+{% block content %}
+<a href="{% url 'organizer_dashboard' %}" class="text-sm text-indigo-600 hover:underline">Back to dashboard</a>
+<h1 class="mt-3 text-2xl font-bold">Attendees for {{ event.title }}</h1>
+<p class="text-slate-600">{{ event.confirmed }} of {{ event.capacity }} spots taken{% if cancelled_count %} · {{ cancelled_count }} cancelled{% endif %}</p>
+<div class="mt-6 space-y-3">
+  {% for reg in attendees %}
+    <div class="card">
+      <p class="font-semibold">{{ reg.user.username }} <span class="font-normal text-slate-600">· {{ reg.user.email }}</span></p>
+      <p class="text-sm text-slate-600">Phone: {{ reg.phone }} · registered {{ reg.created_at|date:"d M Y, H:i" }}</p>
+      {% if reg.note %}<p class="mt-2 whitespace-pre-line text-sm text-slate-700">{{ reg.note }}</p>{% endif %}
+    </div>
+  {% empty %}
+    <p class="text-slate-600">No one has registered yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

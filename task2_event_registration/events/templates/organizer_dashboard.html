@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Organizer dashboard{% endblock %}
+{% block content %}
+<div class="flex flex-wrap items-center justify-between gap-3">
+  <h1 class="text-2xl font-bold">Organizer dashboard</h1>
+  <a class="btn" href="{% url 'event_create' %}">New event</a>
+</div>
+
+<dl class="mt-6 grid grid-cols-3 gap-4">
+  <div class="card"><dt class="text-sm text-slate-600">Events</dt><dd class="text-2xl font-bold">{{ total_events }}</dd></div>
+  <div class="card"><dt class="text-sm text-slate-600">Upcoming</dt><dd class="text-2xl font-bold">{{ upcoming_events }}</dd></div>
+  <div class="card"><dt class="text-sm text-slate-600">Registrations</dt><dd class="text-2xl font-bold">{{ total_registrations }}</dd></div>
+</dl>
+
+<h2 class="mt-10 mb-3 font-semibold">Your events</h2>
+<div class="space-y-3">
+  {% for event in events %}
+    <div class="card flex flex-wrap items-center justify-between gap-3">
+      <div>
+        <a href="{% url 'event_detail' event.pk %}" class="font-semibold hover:underline">{{ event.title }}</a>
+        <p class="text-sm text-slate-600">{{ event.start_time|date:"D, d M Y · g:i A" }} · {{ event.confirmed }} / {{ event.capacity }} registered{% if event.is_past %} · ended{% endif %}</p>
+      </div>
+      <div class="flex gap-2">
+        <a class="btn-quiet" href="{% url 'event_attendees' event.pk %}">Attendees</a>
+        <a class="btn-quiet" href="{% url 'event_edit' event.pk %}">Edit</a>
+        <form method="post" action="{% url 'event_delete' event.pk %}" onsubmit="return confirm('Delete this event and its registrations?')">
+          {% csrf_token %}<button class="btn-quiet" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  {% empty %}
+    <p class="text-slate-600">You haven't created any events yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}
